@@ -139,9 +139,15 @@ export async function runAgent(opts: AgentOptions): Promise<AgentRun & { raw: st
 		writeFileSync(file, opts.appendSystemPrompt);
 		args.push("--append-system-prompt", file);
 	}
-	args.push(opts.prompt);
+	// The prompt goes in on stdin, not argv, and each run gets its own PID namespace when bwrap
+	// exists: an agent's `pkill -f server.mjs` otherwise matches sibling runs whose argv holds
+	// the same words, and kills them (seen as omp exit 143 in the first project batch).
+	const [cmd, argv] = HAS_BWRAP
+		? ["bwrap", ["--dev-bind", "/", "/", "--unshare-pid", "--proc", "/proc", "--die-with-parent", "omp", ...args]]
+		: ["omp", args];
 	const started = Date.now();
-	const child = spawn("omp", args, { cwd: opts.cwd, stdio: ["ignore", "pipe", "pipe"] });
+	const child = spawn(cmd, argv, { cwd: opts.cwd, stdio: ["pipe", "pipe", "pipe"] });
+	child.stdin.end(opts.prompt);
 	let raw = "";
 	let stderr = "";
 	child.stdout.on("data", (d: Buffer) => (raw += d.toString("utf8")));

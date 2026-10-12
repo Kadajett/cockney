@@ -147,7 +147,8 @@ class Step4(TodoCase):
         self.ok("add", "plain")
         self.ok("done", "2")
         self.ok("export", "out.csv")
-        with open(self.dir / "out.csv", newline="") as f:
+        # The prompt asks for Excel compatibility, so a UTF-8 BOM is a legitimate choice.
+        with open(self.dir / "out.csv", newline="", encoding="utf-8-sig") as f:
             rows = list(csv.reader(f))
         self.assertEqual(
             rows,
