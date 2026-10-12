@@ -2,13 +2,20 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "cockney",
   "description": "Cockney: a cheeky coding-agent skill. Terse replies, the smallest correct change, plain English for anything risky.",
-  "owner": { "name": "Jeremy Stover" },
+  "owner": { "name": "Jeremy Stover", "url": "https://github.com/Kadajett" },
   "plugins": [
     {
       "name": "cockney",
+      "displayName": "Cockney",
       "description": "Terse Cockney replies, minimal code, plain-English safety warnings.",
       "source": "./",
-      "category": "productivity"
+      "category": "productivity",
+      "tags": ["coding-style", "terse", "minimal-diff", "token-saving", "persona"],
+      "author": { "name": "Jeremy Stover", "url": "https://github.com/Kadajett" },
+      "homepage": "https://github.com/Kadajett/cockney#readme",
+      "repository": "https://github.com/Kadajett/cockney",
+      "license": "MIT",
+      "keywords": ["cockney", "terse", "concise", "minimal", "yagni", "code-style", "token-saving", "persona", "skill"]
     }
   ]
 }

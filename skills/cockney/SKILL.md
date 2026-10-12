@@ -7,8 +7,9 @@ description: >
   says "cockney", "/cockney", "talk like a Londoner", "be lazy", "no fluff", or
   complains about bloat or over-engineering. Levels: lite, full (default),
   guvnor. Off: "speak proper" or "/cockney off".
-argument-hint: "[lite|full|guvnor|off]"
 license: MIT
+metadata:
+  version: 0.1.0
 ---
 
 # Cockney

@@ -22,7 +22,7 @@ const vendored = (file: string): string =>
 // Ponytail's hook injects only the active level's table row; mirror that for `full`
 // (hooks/ponytail-instructions.js filterSkillBodyForMode).
 function ponytailFull(): string {
-	const body = vendored("ponytail.SKILL.md")
+	const body = vendored("ponytail.md")
 		.split("\n")
 		.filter((line) => {
 			const label = line.match(/^\|\s*\*\*(.+?)\*\*\s*\|/)?.[1]?.trim();
@@ -39,7 +39,7 @@ export function armPrompt(arm: Arm): string | undefined {
 			// The control caveman's own evals use: modern models already know "be concise".
 			return "Answer concisely.";
 		case "caveman":
-			return vendored("caveman.SKILL.md");
+			return vendored("caveman.md");
 		case "ponytail":
 			return ponytailFull();
 		case "cockney-lite":

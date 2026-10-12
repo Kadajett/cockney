@@ -1,7 +1,13 @@
 {
   "name": "cockney",
+  "displayName": "Cockney",
   "version": "0.1.0",
   "description": "Cheeky Cockney coding mode: terse replies, the smallest correct change, plain English for anything risky.",
-  "author": { "name": "Jeremy Stover" },
-  "license": "MIT"
+  "author": { "name": "Jeremy Stover", "url": "https://github.com/Kadajett" },
+  "homepage": "https://github.com/Kadajett/cockney#readme",
+  "repository": "https://github.com/Kadajett/cockney",
+  "license": "MIT",
+  "keywords": ["cockney", "terse", "concise", "minimal", "yagni", "code-style", "token-saving", "persona", "skill"],
+  "icon": "./assets/logo.png",
+  "hooks": "./hooks/claude-hooks.json"
 }

@@ -53,6 +53,21 @@ The bit drops, and plain full sentences take over, for: security problems (a lea
 
 ## Install
 
+Claude Code, always on (recommended):
+
+```bash
+claude plugin marketplace add Kadajett/cockney
+claude plugin install cockney@cockney
+```
+
+Skill file only, for 20-odd agents at once (Claude Code, Codex, Cursor, Amp, Cline…) via [skills.sh](https://skills.sh/Kadajett/cockney):
+
+```bash
+npx skills add Kadajett/cockney
+```
+
+Everything, with always-on hooks for omp, Claude Code and Codex, from a clone:
+
 ```bash
 ./install.sh                    # every agent it finds on this machine
 ./install.sh --omp --claude     # or pick: --omp --claude --claude-plugin --codex --agents-md FILE
@@ -64,11 +79,18 @@ HOME=$(mktemp -d) ./install.sh  # dry run into a throwaway home
 |---|---|---|
 | omp | `~/.omp/agent/skills/cockney/` + an extension in `~/.omp/agent/extensions/cockney/` that appends the ruleset to every turn and adds `/cockney` | live: injection, level switch, off |
 | Claude Code (settings) | `~/.claude/skills/cockney/` + `SessionStart`/`UserPromptSubmit` hooks merged into `~/.claude/settings.json` | live via `--settings` |
-| Claude Code (plugin) | `claude plugin marketplace add <this repo>` then `claude plugin install cockney@cockney` | live via `--plugin-dir`, incl. switch persisting across `--resume` |
+| Claude Code (plugin) | `claude plugin marketplace add Kadajett/cockney` then `claude plugin install cockney@cockney` | live via `--plugin-dir`, incl. switch persisting across `--resume` |
 | Codex | `~/.codex/skills/cockney/` + a marked always-on block in `~/.codex/AGENTS.md` | files only: the Codex CLI's login was broken on this box, so no live turn |
 | any `AGENTS.md` agent | `--agents-md path/to/AGENTS.md` writes the same marked block | files only |
 
 Why hooks and not just a skill: JetBrains found ponytail's `SKILL.md` [self-activated 0 times in 10 sessions](https://blog.jetbrains.com/ai/2026/07/ponytail-skill-claude-tested/) when installed on its own. The hooks inject the ruleset whether the model reaches for it or not. Needs `node` ≥ 22.18 (the hooks are TypeScript run directly); without it they skip quietly.
+
+### What it runs
+
+- **Claude Code plugin / `install.sh --claude`:** `node hooks/claude.ts` on `SessionStart` and on every `UserPromptSubmit` (`hooks/claude-hooks.json`). It prints the ruleset, or a one-line level reminder, as `additionalContext`, and writes the session's level to `~/.config/cockney/sessions/<session_id>` (override with `COCKNEY_STATE_DIR`).
+- **omp:** `hooks/omp.ts` appends the ruleset to the system prompt each turn and registers `/cockney`.
+- **`install.sh`** copies files into the agent's config dir. `--claude` merges the two hooks into `~/.claude/settings.json` via `hooks/claude-settings.ts`, and `--codex`/`--agents-md` write a marked block that `--uninstall` removes.
+- No network calls, no telemetry, nothing outside those paths.
 
 ## Does it work?
 
