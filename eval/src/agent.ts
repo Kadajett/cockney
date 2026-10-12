@@ -11,6 +11,7 @@ export const MODELS: Record<string, string> = {
 	sonnet: "anthropic/claude-sonnet-5-5",
 	opus: "anthropic/claude-opus-5-5",
 	codex: "openai-codex/gpt-5.6-terra",
+	"codex-6": "openai-codex/gpt-6-luna",
 };
 
 // Keep the run hermetic: no user context files, skills, rules or extensions; never openrouter.
