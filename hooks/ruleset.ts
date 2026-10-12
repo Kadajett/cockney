@@ -21,16 +21,17 @@ export function isLevel(value: string): value is Level {
 	return (LEVELS as readonly string[]).includes(value);
 }
 
+// Only the SKILL.md shipped next to these hooks is ever loaded: an env override would let a
+// repository (e.g. via project settings `env`) inject its own text as the session's rules.
 export function findSkillFile(): string {
 	const candidates = [
-		process.env["COCKNEY_SKILL_FILE"],
 		join(HERE, "SKILL.md"),
 		join(HERE, "..", "SKILL.md"),
 		join(HERE, "..", "skills", "cockney", "SKILL.md"),
 		// omp install: ~/.omp/agent/extensions/cockney/ → ~/.omp/agent/skills/cockney/SKILL.md
 		join(HERE, "..", "..", "skills", "cockney", "SKILL.md"),
 	];
-	const found = candidates.find((path) => path !== undefined && existsSync(path));
+	const found = candidates.find((path) => existsSync(path));
 	if (!found) throw new Error(`cockney: SKILL.md not found (looked in ${candidates.join(", ")})`);
 	return found;
 }

@@ -1,7 +1,7 @@
 {
   "name": "cockney",
   "displayName": "Cockney",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cheeky Cockney coding mode: terse replies, the smallest correct change, plain English for anything risky.",
   "author": { "name": "Jeremy Stover", "url": "https://github.com/Kadajett" },
   "homepage": "https://github.com/Kadajett/cockney#readme",

@@ -1,6 +1,6 @@
 {
   "name": "cockney",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Cockney: a cheeky coding-agent skill. Terse replies, the smallest correct change, plain English for anything risky.",
   "license": "MIT",
