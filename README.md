@@ -74,7 +74,7 @@ Why hooks and not just a skill: JetBrains found ponytail's `SKILL.md` [self-acti
 
 Measured, not vibed. Full method in [`eval/README.md`](eval/README.md), raw records in `eval/results/`, research behind the design in [`research/notes.md`](research/notes.md).
 
-**Setup.** 19 tasks with hidden automated checks (bug fixes, features, refactors, explain-only, pushback/over-build bait, safety), each run headless in omp with the arm's ruleset appended to the system prompt, on four models through Jeremy's Anthropic and OpenAI Codex logins. Seven arms: `baseline`, `concise` (the line `Answer concisely.`), `caveman`, `ponytail`, and the three cockney levels. 2,128 single-task runs, plus PROJECT_RUN_COUNT multi-step project builds (6–7 prompts each in one session), plus a blinded Opus judge over every single-task reply. Medians are per task, with exact Wilcoxon tests over tasks.
+**Setup.** 19 tasks with hidden automated checks (bug fixes, features, refactors, explain-only, pushback/over-build bait, safety), each run headless in omp with the arm's ruleset appended to the system prompt, on four models through Jeremy's Anthropic and OpenAI Codex logins. Seven arms: `baseline`, `concise` (the line `Answer concisely.`), `caveman`, `ponytail`, and the three cockney levels. 2,128 single-task runs, plus 154 multi-step project builds (6–7 prompts each in one session), plus a blinded Opus judge over every single-task reply. Medians are per task, with exact Wilcoxon tests over tasks.
 
 ### Single tasks, `cockney` (full) vs baseline
 
@@ -97,9 +97,12 @@ Pass rate never dropped at `full` (no pass-rate change is statistically signific
 | Opus 5.5 | todo-cli | 7/7 → 7/7 | −30.2% | −25.1% | −47.3% |
 | Haiku 4.5 | notes-api | 4.5/6 → 4.5/6 | +14.0% | +17.9% | +4.5% |
 | Haiku 4.5 | todo-cli | 6/7 → 6/7 | −27.4% | −39.6% | −31.3% |
-CODEX_PROJECT_ROWS
+| GPT-5.6 Terra | notes-api | 6/6 → 6/6 | +5.8% | +1.0% | +23.4% |
+| GPT-5.6 Terra | todo-cli | 7/7 → 6.67/7 | −24.7% | −21.3% | −2.5% |
 
-Over a longer session the fixed cost of carrying the ruleset gets paid back, and Sonnet's +22% on single tasks turns into a 10–30% saving.
+Project runs are 2–4 per arm, so read these as direction, not decimals. All seven arms per model: [`eval/results/PROJECTS.md`](eval/results/PROJECTS.md).
+
+On Sonnet and Opus the fixed cost of carrying the ruleset gets paid back over a longer session: Sonnet's +22% on single tasks turns into a 10–30% saving. Haiku and GPT-5.6 are mixed.
 
 ### Where it doesn't help (read this bit)
 
@@ -108,7 +111,7 @@ Over a longer session the fixed cost of carrying the ruleset gets paid back, and
 - **Ponytail gets most of the code-size win on its own**, with a smaller ruleset (924 tokens), so it's cheaper: Sonnet code −55%, Opus −45%. Cockney is roughly ponytail's discipline plus a voice tax and a few extra rules. Ponytail on GPT-5.6 made replies 37% longer; cockney made them 18–26% shorter.
 - **A thicker accent costs money.** An earlier, lighter version (SKILL v5, slang only at the edges, ~920 tokens) measured Sonnet cost +11.6% vs the current +21.7%, with similar pass rate and judge scores. Jeremy chose the proper accent; the bill is above.
 - **The accent fades in long sessions.** In the multi-step builds, slang per reply drops from about 2 in the first step to 0–1 by the last. (The counter only sees listed slang words, not spellings like "nuffin'", so it undercounts.)
-- **Haiku's noisy.** Its notes-api build cost 18% more with cockney, and its safety-secret task failed in every arm (Haiku refuses the key but doesn't fix the code).
+- **Haiku and GPT are noisy on the builds.** Haiku's notes-api build cost 18% more with cockney, GPT-5.6's left 23% more code and dropped one todo-cli step, and Haiku's safety-secret task failed in every arm (it refuses the key but doesn't fix the code).
 - **One harness.** Everything ran in omp. Claude Code and Codex CLI wrap their own system prompts; numbers there will differ.
 
 ## Credits
