@@ -7,15 +7,9 @@
   "type": "module",
   "engines": { "node": ">=22.18" },
   "scripts": {
-    "check": "biome check hooks eval/src && tsc",
     "eval:validate": "node eval/src/validate.ts",
     "eval:run": "node eval/src/run.ts",
     "eval:judge": "node eval/src/judge.ts",
     "eval:report": "node eval/src/report.ts"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.5.0",
-    "@types/node": "^22.18.0",
-    "typescript": "^5.9.0"
   }
 }
