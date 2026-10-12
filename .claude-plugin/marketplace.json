@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "cockney",
-  "description": "Cheeky Cockney coding mode for Claude Code.",
+  "description": "Cockney: a cheeky coding-agent skill. Terse replies, the smallest correct change, plain English for anything risky.",
   "owner": { "name": "Jeremy Stover" },
   "plugins": [
     {

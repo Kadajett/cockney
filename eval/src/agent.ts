@@ -83,6 +83,7 @@ export type AgentOptions = {
   appendSystemPrompt: string | undefined;
   scratchDir: string;
   maxMinutes: number;
+  noTools?: boolean; // judge calls: plain completion, no tool access
 };
 
 export async function runAgent(opts: AgentOptions): Promise<AgentRun & { raw: string }> {
@@ -91,7 +92,8 @@ export async function runAgent(opts: AgentOptions): Promise<AgentRun & { raw: st
   const args = [
     "-p", "--mode", "json", "--model", opts.model, "--thinking", opts.thinking,
     "--no-skills", "--no-rules", "--no-extensions", "--no-lsp", "--no-session", "--no-title",
-    "--auto-approve", "--tools", "read,bash,edit,write,grep,glob", "--config", overlay,
+    "--auto-approve", "--config", overlay,
+    ...(opts.noTools ? ["--no-tools"] : ["--tools", "read,bash,edit,write,grep,glob"]),
     "--max-time", `${opts.maxMinutes}m`, "--cwd", opts.cwd,
   ];
   if (opts.appendSystemPrompt !== undefined) {
