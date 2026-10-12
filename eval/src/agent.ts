@@ -1,7 +1,9 @@
 // Runs one headless omp session and extracts usage from its `--mode json` event stream.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+
+const HAS_BWRAP = spawnSync("bwrap", ["--version"]).status === 0;
 
 // Subscription providers only. A model id resolving anywhere else (e.g. openrouter) aborts the run.
 export const ALLOWED_PROVIDERS: Record<string, true> = { anthropic: true, "openai-codex": true };
