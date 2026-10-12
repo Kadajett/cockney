@@ -10,11 +10,11 @@ import { rng } from "./stats.ts";
 import { loadTasks } from "./tasks.ts";
 
 const { values: opt } = parseArgs({
-  options: {
-    batch: { type: "string" },
-    judge: { type: "string", default: "opus" },
-    concurrency: { type: "string", default: "4" },
-  },
+	options: {
+		batch: { type: "string" },
+		judge: { type: "string", default: "opus" },
+		concurrency: { type: "string", default: "4" },
+	},
 });
 if (!opt.batch) throw new Error("--batch is required");
 const judgeModel = MODELS[opt.judge] ?? opt.judge;
@@ -43,59 +43,87 @@ Then pick "best": the single letter you would most want to receive.
 Answer with JSON only, no prose, no code fence:
 {"scores":{"A":{"clarity":n,"accuracy":n,"completeness":n,"concision":n,"safety_plain":"...","disrespect":false,"overall":n}, ...},"best":"A"}`;
 
-const clip = (text: string, max: number) => (text.length > max ? `${text.slice(0, max)}\n[... truncated]` : text);
+const clip = (text: string, max: number) =>
+	text.length > max ? `${text.slice(0, max)}\n[... truncated]` : text;
 
-function buildPrompt(task: string, entries: readonly { label: string; record: RunRecord }[]): string {
-  const blocks = entries.map(
-    ({ label, record }) =>
-      `=== Reply ${label} ===\n${clip(record.reply, 6000)}\n=== Diff left by ${label} ===\n${clip(record.patch || "(no changes)", 3000)}`,
-  );
-  return `${RUBRIC}\n\n=== Developer request ===\n${prompts.get(task) ?? task}\n\n${blocks.join("\n\n")}`;
+function buildPrompt(
+	task: string,
+	entries: readonly { label: string; record: RunRecord }[],
+): string {
+	const blocks = entries.map(
+		({ label, record }) =>
+			`=== Reply ${label} ===\n${clip(record.reply, 6000)}\n=== Diff left by ${label} ===\n${clip(record.patch || "(no changes)", 3000)}`,
+	);
+	return `${RUBRIC}\n\n=== Developer request ===\n${prompts.get(task) ?? task}\n\n${blocks.join("\n\n")}`;
 }
 
-function parseVerdict(text: string): { scores: Record<string, Omit<Judgment, "group" | "arm" | "label" | "best">>; best: string } {
-  const json = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
-  return JSON.parse(json); // validated field-by-field by the report; malformed output throws here
+function parseVerdict(text: string): {
+	scores: Record<string, Omit<Judgment, "group" | "arm" | "label" | "best">>;
+	best: string;
+} {
+	const json = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
+	return JSON.parse(json); // validated field-by-field by the report; malformed output throws here
 }
 
 async function judgeGroup(group: string, records: RunRecord[]): Promise<void> {
-  const seed = [...group].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
-  const random = rng(seed);
-  const shuffled = records.map((r) => ({ r, k: random() })).sort((a, b) => a.k - b.k);
-  const entries = shuffled.map(({ r }, i) => ({ label: String.fromCharCode(65 + i), record: r }));
-  const scratch = join("/tmp", "cockney-eval", "judge", opt.batch ?? "", group);
-  mkdirSync(scratch, { recursive: true });
-  const prompt = buildPrompt(records[0]?.task ?? "", entries);
-  const run = await runAgent({ model: judgeModel, thinking: "medium", prompt, cwd: scratch, appendSystemPrompt: undefined, scratchDir: scratch, maxMinutes: 10, noTools: true });
-  if (run.error) throw new Error(run.error);
-  const verdict = parseVerdict(run.finalReply);
-  const lines = entries.map(({ label, record }) => {
-    const score = verdict.scores[label];
-    if (!score) throw new Error(`judge omitted reply ${label}`);
-    return JSON.stringify({ group, arm: record.arm, label, ...score, best: verdict.best === label, judge: judgeModel });
-  });
-  appendFileSync(out, `${lines.join("\n")}\n`);
-  console.log(`${group}: best=${entries.find((e) => e.label === verdict.best)?.record.arm}`);
+	const seed = [...group].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+	const random = rng(seed);
+	const shuffled = records.map((r) => ({ r, k: random() })).sort((a, b) => a.k - b.k);
+	const entries = shuffled.map(({ r }, i) => ({ label: String.fromCharCode(65 + i), record: r }));
+	const scratch = join("/tmp", "cockney-eval", "judge", opt.batch ?? "", group);
+	mkdirSync(scratch, { recursive: true });
+	const prompt = buildPrompt(records[0]?.task ?? "", entries);
+	const run = await runAgent({
+		model: judgeModel,
+		thinking: "medium",
+		prompt,
+		cwd: scratch,
+		appendSystemPrompt: undefined,
+		scratchDir: scratch,
+		maxMinutes: 10,
+		noTools: true,
+	});
+	if (run.error) throw new Error(run.error);
+	const verdict = parseVerdict(run.finalReply);
+	const lines = entries.map(({ label, record }) => {
+		const score = verdict.scores[label];
+		if (!score) throw new Error(`judge omitted reply ${label}`);
+		return JSON.stringify({
+			group,
+			arm: record.arm,
+			label,
+			...score,
+			best: verdict.best === label,
+			judge: judgeModel,
+		});
+	});
+	appendFileSync(out, `${lines.join("\n")}\n`);
+	console.log(`${group}: best=${entries.find((e) => e.label === verdict.best)?.record.arm}`);
 }
 
 const judged = new Set(
-  existsSync(out)
-    ? readFileSync(out, "utf8").split("\n").filter(Boolean).map((l) => (JSON.parse(l) as Judgment).group)
-    : [],
+	existsSync(out)
+		? readFileSync(out, "utf8")
+				.split("\n")
+				.filter(Boolean)
+				.map((l) => (JSON.parse(l) as Judgment).group)
+		: [],
 );
 const groups = new Map<string, RunRecord[]>();
 for (const r of loadRecords([opt.batch])) {
-  const group = `${r.model}__${r.task}__${r.rep}`;
-  groups.set(group, [...(groups.get(group) ?? []), r]);
+	const group = `${r.model}__${r.task}__${r.rep}`;
+	groups.set(group, [...(groups.get(group) ?? []), r]);
 }
 const pending = [...groups].filter(([g]) => !judged.has(g));
 console.log(`${pending.length} groups to judge with ${judgeModel}`);
 let next = 0;
 const worker = async () => {
-  while (next < pending.length) {
-    const item = pending[next++];
-    if (!item) return;
-    await judgeGroup(item[0], item[1]).catch((e: unknown) => console.error(`${item[0]}: judge error`, e));
-  }
+	while (next < pending.length) {
+		const item = pending[next++];
+		if (!item) return;
+		await judgeGroup(item[0], item[1]).catch((e: unknown) =>
+			console.error(`${item[0]}: judge error`, e),
+		);
+	}
 };
 await Promise.all(Array.from({ length: Number(opt.concurrency) }, worker));
