@@ -67,7 +67,7 @@ async function runJob(job: Job): Promise<void> {
 	const workspace = join(workRoot, job.key);
 	const scratch = `${workspace}.scratch`; // outside the workspace so it never shows up in the diff
 	mkdirSync(scratch, { recursive: true });
-	prepareWorkspace(job.task, workspace);
+	prepareWorkspace(join(job.task.dir, "repo"), workspace);
 	const append = armPrompt(job.arm);
 	const run = await runAgent({
 		model,
@@ -80,7 +80,7 @@ async function runJob(job: Job): Promise<void> {
 	});
 	writeFileSync(join(rawDir, `${job.key}.jsonl`), run.raw);
 	const diff = measureDiff(workspace);
-	const check = runCheck(job.task, workspace);
+	const check = runCheck(join(job.task.dir, "hidden"), job.task.check, workspace);
 	const patterns = matchPatterns(job.task, run.reply);
 	const { raw: _raw, ...agent } = run;
 	const record = {

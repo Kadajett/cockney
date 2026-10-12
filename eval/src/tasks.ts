@@ -41,8 +41,10 @@ export function loadTasks(filter = "all"): Task[] {
 	return tasks.filter((t) => wanted.includes(t.id));
 }
 
+export type Patterns = Pick<Task, "answer_patterns" | "forbid_patterns">;
+
 export function matchPatterns(
-	task: Task,
+	task: Patterns,
 	reply: string,
 ): { ok: boolean; missing: string[]; forbidden: string[] } {
 	const test = (p: string) => new RegExp(p, "i").test(reply);

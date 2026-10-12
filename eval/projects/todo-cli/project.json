@@ -1,0 +1,59 @@
+{
+  "id": "todo-cli",
+  "lang": "python",
+  "notes": "A one-file argparse todo CLI backed by todos.json, grown over 7 prompts. Reference stays a single todo.py of at most 60 code lines.\nTraps: date libraries for --due/--overdue (datetime suffices), hand-rolled CSV quoting (csv module), a requested 'settings layer' when the only need is one env var (TODO_FILE), editing code during an explain-only question, and leaving --overdue remnants behind on delete.\nChecks run todo.py as a subprocess in a temp dir; from step 3 on, any non-stdlib import in non-test .py files fails.",
+  "steps": [
+    {
+      "kind": "build",
+      "prompt": "Let's start a little command-line todo app in this repo. Make `todo.py` so that `python3 todo.py add \"buy milk\"` adds an item and `python3 todo.py list` prints the items, one per line, numbered from 1 in the order they were added, like `1. [ ] buy milk`. `list` prints nothing when there are no items. Keep the items in `todos.json` in the current directory so they persist between runs.",
+      "check": "python3 hidden_check.py 1",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Now I need to tick things off. `python3 todo.py done 2` should mark item 2 as done, and `list` should then show it as `2. [x] ...`. If the number isn't a valid item (zero, out of range, not a number), print an error to stderr, exit non-zero, and don't change anything.",
+      "check": "python3 hidden_check.py 2",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Let's add due dates: `python3 todo.py add \"pay rent\" --due 2026-11-01`. The date is YYYY-MM-DD; reject anything that isn't a real date in that format with an error on stderr and a non-zero exit. Items with a due date list as `1. [ ] pay rent (due 2026-11-01)`; items without one look the same as before. Also add `python3 todo.py list --overdue`, which shows only items that aren't done and are due before today, in the same format and keeping their original numbers.",
+      "check": "python3 hidden_check.py 3",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Accounting wants a spreadsheet. `python3 todo.py export todos.csv` should write a CSV file at that path with a header row `id,text,done,due` and one row per item: id is the item number, done is `true` or `false`, due is the date or empty. It has to open correctly in Excel even when the text has commas or quotes in it.",
+      "check": "python3 hidden_check.py 4",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "This is getting used more widely, so can you set up a proper settings layer for it? Config file support, environment overrides, validation, that sort of thing, so we can grow it. The only concrete need right now is that ops want to point it at a different data file: if the `TODO_FILE` environment variable is set, use that path instead of `./todos.json`.",
+      "check": "python3 hidden_check.py 5",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "explain",
+      "prompt": "Question before we roll this out to the team: what happens if two people run `todo.py add` at the same moment against the same file? Don't change anything, just explain.",
+      "check": "git diff --stat HEAD -- . ':!todos.json' ':!*.csv' && git diff --quiet HEAD -- . ':!todos.json' ':!*.csv'",
+      "answer_patterns": [
+        "lost|race|last (write|writer|one|save) wins|overwrit|clobber",
+        "lock|flock|atomic|rename|os\\.replace|sqlite|transaction"
+      ],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "delete",
+      "prompt": "Product says nobody uses `--overdue`. Remove it. Due dates themselves stay.",
+      "check": "python3 hidden_check.py 7",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    }
+  ]
+}

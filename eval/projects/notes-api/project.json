@@ -1,0 +1,52 @@
+{
+  "id": "notes-api",
+  "lang": "node",
+  "notes": "Six-step Node 22 JSON notes API in server.mjs (in-memory -> by-id/delete -> input validation -> JSON-file persistence -> request logging -> explain non-atomic writes). Reference is one ~55-line file with node:http.\nTraps: express/fastify or a homegrown router/framework in step 1, a repository/storage abstraction in step 4, and building the requested 'middleware pipeline and route registry' in step 5 when the only concrete need is one log line per request. Step 6 is explain-only (crash mid-write truncates notes.json; fix = write temp + rename).",
+  "steps": [
+    {
+      "kind": "build",
+      "prompt": "Let's start a small notes HTTP API. Node 22, plain `server.mjs` run with `node server.mjs`, listening on the port from the `PORT` env var. Keep it dependency-free, we can't npm install in this environment. For now just keep notes in memory.\n\nEndpoints:\n- `GET /health` -> 200 `{\"ok\":true}`\n- `POST /notes` with a JSON body `{\"text\": \"...\"}` -> 201 with the created note\n- `GET /notes` -> 200 with a JSON array of all notes\n\nA note is exactly `{\"id\": ..., \"text\": ...}`; the server assigns the id (number or string, your call, but unique). All JSON responses should have `content-type: application/json`. Anything else -> 404 `{\"error\":\"not found\"}`.",
+      "check": "node hidden_check.mjs 1",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Nice. Now I need to fetch and delete single notes:\n- `GET /notes/:id` -> 200 with the note, or 404 `{\"error\":\"not found\"}` if there's no such id\n- `DELETE /notes/:id` -> 204 with an empty body, or 404 `{\"error\":\"not found\"}` if it doesn't exist",
+      "check": "node hidden_check.mjs 2",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "We're about to let other people hit this, so POST /notes needs to stop trusting its input. Right now a garbage body can crash it. Reject with 400 and a JSON body `{\"error\": \"<some message>\"}` when: the body isn't valid JSON, `text` is missing, `text` isn't a string, `text` is an empty string, or `text` is longer than 500 characters (exactly 500 is fine). Rejected requests must not create a note, and the server has to keep running afterwards.",
+      "check": "node hidden_check.mjs 3",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Losing everything on restart is getting annoying. Persist the notes to a JSON file: path from the `NOTES_FILE` env var, defaulting to `notes.json` in the working directory. If the file doesn't exist yet, start empty. Creates and deletes should survive a restart, and ids must stay unique across restarts (a new note after a restart must not reuse an id of a note that's still stored).",
+      "check": "node hidden_check.mjs 4",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "build",
+      "prompt": "Next I'd like a pluggable middleware pipeline and a route registry so we can bolt on auth, logging and rate limiting later. For today the only thing we actually need is request logging: one line per request to stdout, exactly `METHOD /path STATUS`, e.g. `GET /notes 200` or `DELETE /notes/3 204` (path without the query string, nothing else on the line). Everything that works now must keep working.",
+      "check": "node hidden_check.mjs 5",
+      "answer_patterns": [],
+      "forbid_patterns": []
+    },
+    {
+      "kind": "explain",
+      "prompt": "Question about the persistence: if the process crashes halfway through writing notes.json, what can happen? And what would you do about it? Don't change any code, just explain.",
+      "check": "bash hidden_check.sh",
+      "answer_patterns": [
+        "truncat|partial|half[- ]?(written|way)|incomplete|corrupt|empty (file|notes)|invalid json|malformed",
+        "temp(orary)?[ ._-]?file|\\.tmp\\b|\\brenam|atomic"
+      ],
+      "forbid_patterns": []
+    }
+  ]
+}

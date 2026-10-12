@@ -10,12 +10,12 @@ let failures = 0;
 
 for (const task of loadTasks(process.argv[2] ?? "all")) {
 	const before = join(root, `${task.id}-before`);
-	prepareWorkspace(task, before);
-	const untouched = runCheck(task, before);
+	prepareWorkspace(join(task.dir, "repo"), before);
+	const untouched = runCheck(join(task.dir, "hidden"), task.check, before);
 	const after = join(root, `${task.id}-after`);
-	prepareWorkspace(task, after);
+	prepareWorkspace(join(task.dir, "repo"), after);
 	applySolution(task, after);
-	const solved = runCheck(task, after);
+	const solved = runCheck(join(task.dir, "hidden"), task.check, after);
 	const answerFile = join(task.dir, "solution", "ANSWER.md");
 	const answer = existsSync(answerFile) ? readFileSync(answerFile, "utf8") : "";
 	const patterns = matchPatterns(task, answer);

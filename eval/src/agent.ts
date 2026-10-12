@@ -102,6 +102,8 @@ export type AgentOptions = {
 	scratchDir: string;
 	maxMinutes: number;
 	noTools?: boolean; // judge calls: plain completion, no tool access
+	// Multi-step projects: keep the session in `dir`; `resume` continues the latest one there.
+	session?: { dir: string; resume: boolean };
 };
 
 export async function runAgent(opts: AgentOptions): Promise<AgentRun & { raw: string }> {
@@ -119,7 +121,9 @@ export async function runAgent(opts: AgentOptions): Promise<AgentRun & { raw: st
 		"--no-rules",
 		"--no-extensions",
 		"--no-lsp",
-		"--no-session",
+		...(opts.session
+			? ["--session-dir", opts.session.dir, ...(opts.session.resume ? ["--continue"] : [])]
+			: ["--no-session"]),
 		"--no-title",
 		"--auto-approve",
 		"--config",
