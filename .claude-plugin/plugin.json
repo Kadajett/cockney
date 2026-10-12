@@ -1,0 +1,7 @@
+{
+  "name": "cockney",
+  "version": "0.1.0",
+  "description": "Cheeky Cockney coding mode: terse replies, the smallest correct change, plain English for anything risky.",
+  "author": { "name": "Jeremy Stover" },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "bug-root-cause",
+  "category": "bugfix",
+  "split": "dev",
+  "prompt": "Bob can't log in. He signed up as Bob@example.com, but when he types \"  Bob@Example.COM \" on the login form (his password manager pastes it like that) he gets \"invalid email or password\". The password is definitely right. Can you sort out login?",
+  "check": "python3 -m unittest -q test_hidden",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: patching only accounts/login.py. Root cause is accounts/util.normalize_email (no strip, domain not lowercased), shared by signup/login/invite; hidden tests exercise all three. Minimal fix: strip + lowercase domain in the helper (2 lines)."
+}

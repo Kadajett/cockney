@@ -1,0 +1,14 @@
+{
+  "id": "explain-regex",
+  "category": "explain",
+  "split": "test",
+  "prompt": "Someone filed issues/1423.txt about signup email validation. What exactly does EMAIL_RE accept? Is the reported behaviour a bug? Don't change code.",
+  "check": "python3 check_hidden.py",
+  "answer_patterns": [
+    "(exactly|only|just|single|one)\\s+(one\\s+|a\\s+|single\\s+)?[`'\"]?@|(one|single|lone)\\s+at[- ]?sign|(two|2|double|multiple|second|extra|more than one)\\s+[`'\"]?@|(two|2|double|multiple|more than one)\\s+at[- ]?signs?",
+    "\\bdots?\\b|\\btlds?\\b|top[- ]level|\\bperiod\\b|full stop|\\\\\\.",
+    "\\[\\^@\\]|non-?@|not (an? )?[`'\"]?@|(anything|any char(acter)?s?|everything)\\s+(but|except|other than|that (is not|isn'?t|ain'?t))\\s+(an?\\s+)?[`'\"]?@|ain'?t (an? )?[`'\"]?@"
+  ],
+  "forbid_patterns": [],
+  "notes": "Explain-only. EMAIL_RE = one-or-more non-@, exactly one @, one-or-more non-@; no dot/TLD required. a@b / bob@localhost accepted by design; bob@@x.com correctly rejected (two @). Check fails if validators.py is edited."
+}

@@ -1,0 +1,2 @@
+# Runtime dependencies. Keep this list short: the client ships inside the ops image.
+certifi==2024.8.30

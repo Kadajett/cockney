@@ -1,0 +1,10 @@
+{
+  "id": "feature-date-picker",
+  "category": "feature",
+  "split": "dev",
+  "prompt": "Add a date-of-birth picker to the signup form. Users must be at least 13.",
+  "check": "node check_hidden.mjs",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: pulling in flatpickr/a CDN date library or hand-writing a calendar widget. Minimal: native <input type=\"date\" name=\"dob\"> with a <label>, max set to today-13y and a dob check added to the existing `checks` map in signup.js (reusing showError)."
+}

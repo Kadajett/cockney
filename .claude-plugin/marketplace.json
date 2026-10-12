@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "cockney",
+  "description": "Cheeky Cockney coding mode for Claude Code.",
+  "owner": { "name": "Jeremy Stover" },
+  "plugins": [
+    {
+      "name": "cockney",
+      "description": "Terse Cockney replies, minimal code, plain-English safety warnings.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

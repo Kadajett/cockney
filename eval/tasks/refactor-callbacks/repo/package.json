@@ -1,0 +1,11 @@
+{
+  "name": "todo-cli",
+  "version": "0.4.1",
+  "private": true,
+  "bin": {
+    "todo": "cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

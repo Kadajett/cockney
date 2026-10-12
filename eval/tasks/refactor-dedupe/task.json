@@ -1,0 +1,10 @@
+{
+  "id": "refactor-dedupe",
+  "category": "refactor",
+  "split": "dev",
+  "prompt": "The three CSV exporters in exporters.py are copy-paste of each other. Clean that up. Don't change behaviour.",
+  "check": "python3 -m unittest -q test_hidden",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: Exporter base class hierarchy / registry (dashboard.py already has EXPORTS), or homogenising away the products 'discontinued' skip or generator support (count via loop, not len). Minimal: one private _write_csv(path, header, rows) helper + three short functions passing row generators. Hidden test: byte-exact output, signatures, and at most one csv writer/open call in non-test code."
+}

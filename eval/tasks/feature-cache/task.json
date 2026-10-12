@@ -1,0 +1,10 @@
+{
+  "id": "feature-cache",
+  "category": "feature",
+  "split": "test",
+  "prompt": "get_price in prices.py is hammering the pricing backend with the same SKUs over and over. Add caching.",
+  "check": "python3 -m unittest -q test_hidden",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: a hand-rolled cache class with TTL/eviction/config knobs. Minimal: @functools.cache (or lru_cache) on get_price; hidden test checks one backend call per SKU, correct values, basket_total benefits, unknown SKUs still raise."
+}

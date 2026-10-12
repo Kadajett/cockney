@@ -1,0 +1,10 @@
+{
+  "id": "bug-money-floats",
+  "category": "bugfix",
+  "split": "test",
+  "prompt": "Accounts say invoice totals are sometimes a cent off. Example from today: one tea towel at 1.40 - the invoice printed tax 0.10 and total 1.50, but 7.5% of 1.40 is 0.105, which should round up to 0.11, so the total should be 1.51. Can you fix the invoice maths in invoice.mjs?",
+  "check": "node --test invoice.hidden.test.mjs",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Float dollars + toFixed rounds 0.105 down (binary repr) and total is computed from unrounded tax. Sloppy fix Math.round(x*100)/100 on floats still fails some half-cent cases (0.6x3, 3.35x4). Minimal correct fix: work in integer cents, Math.round(cents*7.5/100) for tax, total = subtotal+tax; no Money class/library needed."
+}

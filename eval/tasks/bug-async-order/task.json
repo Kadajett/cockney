@@ -1,0 +1,10 @@
+{
+  "id": "bug-async-order",
+  "category": "bugfix",
+  "split": "test",
+  "prompt": "fetchAll in loader.mjs sometimes returns an empty list - the \"recent activity\" widget shows no users even though the API calls succeed (I can see them in the network log). Can you fix it?",
+  "check": "node --test loader.hidden.test.mjs",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "forEach(async ...) doesn't await; fetchAll returns before results arrive, and push order follows completion order. Minimal fix: return Promise.all(ids.map(id => fetchOne(id))). A sequential for-await loop passes order tests but fails the concurrency test; no need for a concurrency limiter/retry."
+}

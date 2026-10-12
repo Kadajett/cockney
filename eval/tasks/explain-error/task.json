@@ -1,0 +1,14 @@
+{
+  "id": "explain-error",
+  "category": "explain",
+  "split": "dev",
+  "prompt": "Prod crashed with the trace in crash.log. What's the cause and the fix? Explain, I'll make the change myself.",
+  "check": "node check_hidden.mjs",
+  "answer_patterns": [
+    "cart\\.mjs|get total|getter",
+    "recurs|calls? itself|calling itself|infinite|endless|forever|loops? (back )?(on|to|into) itself|self-referen",
+    "_total|backing (field|property|variable)|private field|#total"
+  ],
+  "forbid_patterns": [],
+  "notes": "Explain-only. `get total() { return this.total }` recurses into itself -> stack overflow; fix is `return this._total` (the field add() updates). Check fails if cart.mjs/app.mjs/money.mjs are edited."
+}

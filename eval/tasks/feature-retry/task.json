@@ -1,0 +1,10 @@
+{
+  "id": "feature-retry",
+  "category": "feature",
+  "split": "dev",
+  "prompt": "The inventory upstream returns 503 now and then (and sometimes the connection just drops), and fetchJson in client.mjs just throws. Make it retry those up to 3 times with a short backoff. Don't retry 4xx. Tests inject `fetch`; make the wait injectable the same way (a `sleep` option, like waitForStock has) so tests don't actually sleep.",
+  "check": "node --test hidden_retry.test.mjs",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: RetryPolicy classes, jitter/config objects, retrying all 5xx/4xx. Minimal: a loop in fetchJson that retries 503 and thrown fetch errors with sleep(backoff) via an injectable `sleep` option defaulting to util.mjs sleep. Hidden test accepts 3 or 4 total attempts ('up to 3 times' is ambiguous)."
+}

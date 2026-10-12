@@ -1,0 +1,10 @@
+{
+  "id": "bug-pagination",
+  "category": "bugfix",
+  "split": "dev",
+  "prompt": "Support ticket from the warehouse team: \"Page 2 of the order list is missing an order. We have 13 open orders (#1001-#1013). Page 2 starts at #1011, and #1010 isn't on page 1 either - it just never shows up.\" Can you fix it? The order list screen is rendered by report.py.",
+  "check": "python3 -m unittest -q test_hidden",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Off-by-one in listing.paginate (end = start + per_page - 1) drops the last item of every page. Minimal fix: one-line change of the slice end in listing.py; no changes to report.py needed."
+}

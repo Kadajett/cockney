@@ -1,0 +1,8 @@
+body { font-family: system-ui, sans-serif; background: #f4f5f7; margin: 0; }
+.card { max-width: 380px; margin: 4rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.field { margin-bottom: 1rem; }
+label { display: block; font-weight: 600; margin-bottom: .25rem; }
+input { width: 100%; box-sizing: border-box; padding: .5rem; border: 1px solid #c4c8cf; border-radius: 4px; font: inherit; }
+input[aria-invalid="true"] { border-color: #c0392b; }
+.error { color: #c0392b; font-size: .875rem; margin: .25rem 0 0; }
+button { width: 100%; padding: .6rem; border: 0; border-radius: 4px; background: #2d6cdf; color: #fff; font: inherit; cursor: pointer; }

@@ -1,0 +1,11 @@
+{
+  "name": "acme-signup",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Static signup page for Acme accounts",
+  "scripts": {
+    "start": "python3 -m http.server 8080"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

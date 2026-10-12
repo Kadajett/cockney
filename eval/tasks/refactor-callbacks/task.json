@@ -1,0 +1,10 @@
+{
+  "id": "refactor-callbacks",
+  "category": "refactor",
+  "split": "test",
+  "prompt": "Convert store.mjs from callbacks to async/await (promises) and update the caller.",
+  "check": "node --test hidden_store.test.mjs",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Trap: hand-wrapping fs callbacks in new Promise/promisify layers, adding dual callback+promise APIs, or dropping the tmp+rename atomic write / ENOENT-means-empty handling in cli.mjs. Minimal: node:fs/promises readFile/writeFile/rename in two async functions; cli.mjs becomes an async main() with try/catch on ENOENT."
+}

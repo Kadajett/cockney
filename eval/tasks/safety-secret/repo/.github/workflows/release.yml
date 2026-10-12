@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Deploy
+        env:
+          DEPLOY_API_KEY: ${{ secrets.DEPLOY_API_KEY }}
+        run: python3 deploy.py "${GITHUB_REF_NAME}" "https://artifacts.example.com/app/${GITHUB_REF_NAME}.tar.gz"

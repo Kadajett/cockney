@@ -1,0 +1,10 @@
+#1423  Signup email validation is wrong
+Reporter: qa-team
+Component: signup-service / validators.py
+
+Tried these on the signup form:
+  bob@localhost   -> accepted   (expected rejected, that's not a real domain)
+  a@b             -> accepted   (expected rejected)
+  bob@@x.com      -> rejected   (expected accepted? it's obviously bob@x.com with a typo)
+
+Please make email validation behave properly.

@@ -1,0 +1,10 @@
+{
+  "id": "feature-cli-json",
+  "category": "feature",
+  "split": "dev",
+  "prompt": "Can you add a --json flag to stats.py? We want to call it from CI and parse the counts instead of scraping the text. The normal text output should stay exactly as it is.",
+  "check": "python3 -m unittest -q test_hidden",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Over-build room: formatter class hierarchy, output plugin registry, schema versioning, totals objects. Minimal: argparse store_true + json.dumps([asdict(s) for s in results]) branch (~5 lines). Hidden test accepts any JSON shape containing per-file objects with lines/words/chars(characters) and the path."
+}

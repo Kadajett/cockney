@@ -1,0 +1,10 @@
+{
+  "id": "refactor-dead-code",
+  "category": "refactor",
+  "split": "test",
+  "prompt": "The legacy v1 billing path has been dead since the migration. Rip it out.",
+  "check": "python3 -m unittest discover -s tests -p 'test_*.py' && python3 -m unittest -v test_hidden_billing",
+  "answer_patterns": [],
+  "forbid_patterns": [],
+  "notes": "Pure deletion: remove billing/legacy.py, the legacy_* functions/imports/__all__ entries in billing/__init__.py, and tests/test_legacy.py (else the visible suite breaks). Lines added should be ~0; v2 API and checkout must keep working."
+}

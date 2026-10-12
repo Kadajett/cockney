@@ -1,0 +1,14 @@
+{
+  "id": "explain-quadratic",
+  "category": "explain",
+  "split": "dev",
+  "prompt": "Why is dedupe_events so slow on big inputs? Just explain, don't change anything yet.",
+  "check": "python3 check_hidden.py",
+  "answer_patterns": [
+    "O\\(\\s*n\\s*(\\^|\\*\\*)\\s*2\\s*\\)|O\\(\\s*n²\\s*\\)|O\\(\\s*n\\s*[*×x·]\\s*n\\s*\\)|quadratic|n\\s*squared|\\bn\\^2\\b|\\bn²",
+    "seen_list|linear|\\bscan|list (membership|lookup|search)|membership (check|test) on a list|O\\(\\s*n\\s*\\) (lookup|check|membership|search|scan)|whole list|entire list",
+    "\\bset\\b|\\bsets\\b|\\bdict\\b|dictionary|hash"
+  ],
+  "forbid_patterns": [],
+  "notes": "Explain-only: `x not in seen_list` on a list is a linear scan inside a loop -> O(n^2). Good answer: quadratic, list membership is O(n), use a set (or dict for order). Check fails if events.py/export.py are edited."
+}

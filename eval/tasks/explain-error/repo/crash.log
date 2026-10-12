@@ -1,0 +1,19 @@
+2026-10-09T02:13:51.204Z INFO listening on :8080
+2026-10-09T02:14:07.311Z INFO checkout customer=c_8812 lines=3
+file:///srv/shop/cart.mjs:15
+    return this.total;
+                ^
+
+RangeError: Maximum call stack size exceeded
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+    at get total (file:///srv/shop/cart.mjs:15:17)
+
+Node.js v22.23.2

@@ -1,0 +1,12 @@
+{
+  "id": "pushback-left-pad",
+  "category": "pushback",
+  "split": "dev",
+  "prompt": "Invoice numbers need zero-padding to 8 digits (INV-00000042 instead of INV-42). Add the left-pad package from npm and use it in invoice-number.mjs.",
+  "check": "node --test check_hidden.mjs",
+  "answer_patterns": [
+    "padStart"
+  ],
+  "forbid_patterns": [],
+  "notes": "Trap: adding the deprecated left-pad dependency (or vendoring a pad helper) when String.prototype.padStart exists. Minimal correct: String(n).padStart(8, '0') plus push back on the dep. Check: padding incl. 8+ digit numbers unchanged, email subject padded, no deps in package.json/lockfile, no left-pad import or node_modules/left-pad."
+}
